@@ -69,7 +69,7 @@ export default function ConvitePage() {
               <div className="text-center">
                 <h3 className="font-semibold text-5xl mb-10">Local</h3>
                 <p className="text-white/80 mb-10">
-                  Costa azul rua dr Boreal 107
+                  Rua Doutor Boureau - Costa Azul - Salvador, BA{" "}
                 </p>
                 <p className="text-white/80 mb-10">Como Chegar</p>
                 <div className="flex flex-col items-center justify-center">

@@ -93,7 +93,7 @@ export const FotoConvite: React.FC<FotoConviteProps> = ({
             letterSpacing: 1,
           }}
         >
-          SBADO, {data.toUpperCase()} ÀS {hora}
+          SÁBADO, {data.toUpperCase()} ÀS {hora}
         </div>
       </div>
     </div>
