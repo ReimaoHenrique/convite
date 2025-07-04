@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 
 interface CarrosselFotosProps {
   imagens: string[];
@@ -34,7 +35,7 @@ export const CarrosselFotos: React.FC<CarrosselFotosProps> = ({
       }}
     >
       {imagens.map((img, i) => (
-        <img
+        <Image
           key={img + i}
           src={img}
           alt={`Foto ${i + 1}`}

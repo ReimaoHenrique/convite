@@ -1,6 +1,12 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 export interface Convidado {
   id: string;
@@ -9,14 +15,23 @@ export interface Convidado {
   dataConfirmacao: Date;
 }
 
+type ConvidadoAPI = Omit<Convidado, "dataConfirmacao"> & {
+  dataConfirmacao: string;
+};
+
 interface ConvidadosContextType {
   convidados: Convidado[];
-  adicionarConvidado: (nomeCompleto: string, confirmado: boolean) => Promise<void>;
+  adicionarConvidado: (
+    nomeCompleto: string,
+    confirmado: boolean
+  ) => Promise<void>;
   carregando: boolean;
   erro: string | null;
 }
 
-const ConvidadosContext = createContext<ConvidadosContextType | undefined>(undefined);
+const ConvidadosContext = createContext<ConvidadosContextType | undefined>(
+  undefined
+);
 
 export function ConvidadosProvider({ children }: { children: ReactNode }) {
   const [convidados, setConvidados] = useState<Convidado[]>([]);
@@ -32,37 +47,40 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
     try {
       setCarregando(true);
       setErro(null);
-      
-      const response = await fetch('/api/convidados');
+
+      const response = await fetch("/api/convidados");
       if (!response.ok) {
-        throw new Error('Erro ao carregar convidados');
+        throw new Error("Erro ao carregar convidados");
       }
-      
-      const data = await response.json();
-      
+
+      const data: ConvidadoAPI[] = await response.json();
+
       // Converter strings de data de volta para objetos Date
-      const convidadosComData = data.map((convidado: any) => ({
+      const convidadosComData: Convidado[] = data.map((convidado) => ({
         ...convidado,
-        dataConfirmacao: new Date(convidado.dataConfirmacao)
+        dataConfirmacao: new Date(convidado.dataConfirmacao),
       }));
-      
+
       setConvidados(convidadosComData);
     } catch (error) {
-      console.error('Erro ao carregar convidados:', error);
-      setErro('Erro ao carregar dados dos convidados');
+      console.error("Erro ao carregar convidados:", error);
+      setErro("Erro ao carregar dados dos convidados");
     } finally {
       setCarregando(false);
     }
   };
 
-  const adicionarConvidado = async (nomeCompleto: string, confirmado: boolean) => {
+  const adicionarConvidado = async (
+    nomeCompleto: string,
+    confirmado: boolean
+  ) => {
     try {
       setErro(null);
-      
-      const response = await fetch('/api/convidados', {
-        method: 'POST',
+
+      const response = await fetch("/api/convidados", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           nomeCompleto,
@@ -71,32 +89,34 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao salvar convidado');
+        throw new Error("Erro ao salvar convidado");
       }
 
-      const novoConvidado = await response.json();
-      
+      const novoConvidado: ConvidadoAPI = await response.json();
+
       // Converter string de data para objeto Date
-      const convidadoComData = {
+      const convidadoComData: Convidado = {
         ...novoConvidado,
-        dataConfirmacao: new Date(novoConvidado.dataConfirmacao)
+        dataConfirmacao: new Date(novoConvidado.dataConfirmacao),
       };
 
-      setConvidados(prev => [...prev, convidadoComData]);
+      setConvidados((prev) => [...prev, convidadoComData]);
     } catch (error) {
-      console.error('Erro ao adicionar convidado:', error);
-      setErro('Erro ao salvar confirmação');
+      console.error("Erro ao adicionar convidado:", error);
+      setErro("Erro ao salvar confirmação");
       throw error; // Re-throw para que o componente possa tratar o erro
     }
   };
 
   return (
-    <ConvidadosContext.Provider value={{ 
-      convidados, 
-      adicionarConvidado, 
-      carregando, 
-      erro 
-    }}>
+    <ConvidadosContext.Provider
+      value={{
+        convidados,
+        adicionarConvidado,
+        carregando,
+        erro,
+      }}
+    >
       {children}
     </ConvidadosContext.Provider>
   );
@@ -105,8 +125,9 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
 export function useConvidados() {
   const context = useContext(ConvidadosContext);
   if (context === undefined) {
-    throw new Error('useConvidados deve ser usado dentro de um ConvidadosProvider');
+    throw new Error(
+      "useConvidados deve ser usado dentro de um ConvidadosProvider"
+    );
   }
   return context;
 }
-

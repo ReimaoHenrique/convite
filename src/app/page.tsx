@@ -28,7 +28,7 @@ export default function ConvitePage() {
         }, 3000);
       } catch (error) {
         // Erro já é tratado no context
-        console.error('Erro ao enviar confirmação:', error);
+        console.error("Erro ao enviar confirmação:", error);
       } finally {
         setEnviando(false);
       }
@@ -164,7 +164,7 @@ export default function ConvitePage() {
                         confirmado === true
                           ? "bg-green-500 text-white shadow-lg scale-105"
                           : "bg-white/10 text-white border border-white/30 hover:bg-white/20"
-                      } ${enviando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      } ${enviando ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       ✅ Sim, estarei presente!
                     </button>
@@ -176,7 +176,7 @@ export default function ConvitePage() {
                         confirmado === false
                           ? "bg-red-500 text-white shadow-lg scale-105"
                           : "bg-white/10 text-white border border-white/30 hover:bg-white/20"
-                      } ${enviando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      } ${enviando ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       ❌ Não poderei comparecer
                     </button>
@@ -185,10 +185,12 @@ export default function ConvitePage() {
 
                 <button
                   type="submit"
-                  disabled={!nomeCompleto.trim() || confirmado === null || enviando}
+                  disabled={
+                    !nomeCompleto.trim() || confirmado === null || enviando
+                  }
                   className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-xl hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 shadow-lg"
                 >
-                  {enviando ? 'Enviando...' : 'Enviar Confirmação'}
+                  {enviando ? "Enviando..." : "Enviar Confirmação"}
                 </button>
               </form>
             )}
@@ -200,4 +202,3 @@ export default function ConvitePage() {
     </div>
   );
 }
-

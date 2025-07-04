@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 interface FotoConviteProps {
@@ -29,9 +30,11 @@ export const FotoConvite: React.FC<FotoConviteProps> = ({
         fontFamily: "sans-serif",
       }}
     >
-      <img
+      <Image
         src={src}
         alt={nome}
+        width={800} // ✅ largura definida
+        height={260} // ✅ altura definida
         style={{
           width: "100%",
           height: 260,
