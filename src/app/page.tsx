@@ -59,7 +59,7 @@ export default function ConvitePage() {
               nome="Oneide Fernandes"
               idade={70}
               data="2 de Agosto"
-              hora="18h30"
+              hora="13h00"
             />
           </div>
           {/* Detalhes do evento */}
