@@ -8,21 +8,30 @@ import { FotoConvite } from "@/components/FotoConvite";
 import Maps from "@/components/maps/maps";
 
 export default function ConvitePage() {
-  const { adicionarConvidado } = useConvidados();
+  const { adicionarConvidado, erro } = useConvidados();
   const [nomeCompleto, setNomeCompleto] = useState("");
   const [confirmado, setConfirmado] = useState<boolean | null>(null);
   const [enviado, setEnviado] = useState(false);
+  const [enviando, setEnviando] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (nomeCompleto.trim() && confirmado !== null) {
-      adicionarConvidado(nomeCompleto.trim(), confirmado);
-      setEnviado(true);
-      setTimeout(() => {
-        setNomeCompleto("");
-        setConfirmado(null);
-        setEnviado(false);
-      }, 3000);
+      try {
+        setEnviando(true);
+        await adicionarConvidado(nomeCompleto.trim(), confirmado);
+        setEnviado(true);
+        setTimeout(() => {
+          setNomeCompleto("");
+          setConfirmado(null);
+          setEnviado(false);
+        }, 3000);
+      } catch (error) {
+        // Erro já é tratado no context
+        console.error('Erro ao enviar confirmação:', error);
+      } finally {
+        setEnviando(false);
+      }
     }
   };
 
@@ -104,6 +113,13 @@ export default function ConvitePage() {
               Confirme sua Presença
             </h3>
 
+            {/* Exibir erro se houver */}
+            {erro && (
+              <div className="bg-red-500/20 border border-red-400/30 rounded-xl p-4 mb-6">
+                <p className="text-red-200">{erro}</p>
+              </div>
+            )}
+
             {enviado ? (
               <div className="text-center py-8">
                 <div className="text-6xl mb-4">✨</div>
@@ -131,6 +147,7 @@ export default function ConvitePage() {
                     className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all duration-300"
                     placeholder="Digite seu nome completo"
                     required
+                    disabled={enviando}
                   />
                 </div>
 
@@ -142,22 +159,24 @@ export default function ConvitePage() {
                     <button
                       type="button"
                       onClick={() => setConfirmado(true)}
+                      disabled={enviando}
                       className={`px-8 py-3 rounded-xl font-medium transition-all duration-300 ${
                         confirmado === true
                           ? "bg-green-500 text-white shadow-lg scale-105"
                           : "bg-white/10 text-white border border-white/30 hover:bg-white/20"
-                      }`}
+                      } ${enviando ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       ✅ Sim, estarei presente!
                     </button>
                     <button
                       type="button"
                       onClick={() => setConfirmado(false)}
+                      disabled={enviando}
                       className={`px-8 py-3 rounded-xl font-medium transition-all duration-300 ${
                         confirmado === false
                           ? "bg-red-500 text-white shadow-lg scale-105"
                           : "bg-white/10 text-white border border-white/30 hover:bg-white/20"
-                      }`}
+                      } ${enviando ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       ❌ Não poderei comparecer
                     </button>
@@ -166,10 +185,10 @@ export default function ConvitePage() {
 
                 <button
                   type="submit"
-                  disabled={!nomeCompleto.trim() || confirmado === null}
+                  disabled={!nomeCompleto.trim() || confirmado === null || enviando}
                   className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-xl hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 shadow-lg"
                 >
-                  Enviar Confirmação
+                  {enviando ? 'Enviando...' : 'Enviar Confirmação'}
                 </button>
               </form>
             )}
@@ -181,3 +200,4 @@ export default function ConvitePage() {
     </div>
   );
 }
+

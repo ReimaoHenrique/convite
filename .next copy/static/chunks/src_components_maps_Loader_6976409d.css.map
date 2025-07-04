@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///home/reimao/Downloads/convite-modificado/convite/src/components/maps/Loader.css"],"sourcesContent":["/* From Uiverse.io by JaydipPrajapati1910 */\n.loader {\n  width: 44.8px;\n  height: 44.8px;\n  position: relative;\n  transform: rotate(45deg);\n}\n\n.loader:before,\n.loader:after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  border-radius: 50% 50% 0 50%;\n  background: #0000;\n  background-image: radial-gradient(\n    circle 11.2px at 50% 50%,\n    #0000 94%,\n    #ff4747\n  );\n}\n\n.loader:after {\n  animation: pulse-ytk0dhmd 1s infinite;\n  transform: perspective(336px) translateZ(0px);\n}\n\n@keyframes pulse-ytk0dhmd {\n  to {\n    transform: perspective(336px) translateZ(168px);\n    opacity: 0;\n  }\n}\n"],"names":[],"mappings":"AACA;;;;;;;AAOA;;;;;;;;AAcA;;;;;AAKA","debugId":null}}]
+}

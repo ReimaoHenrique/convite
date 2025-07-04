@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export interface Convidado {
   id: string;
@@ -11,26 +11,92 @@ export interface Convidado {
 
 interface ConvidadosContextType {
   convidados: Convidado[];
-  adicionarConvidado: (nomeCompleto: string, confirmado: boolean) => void;
+  adicionarConvidado: (nomeCompleto: string, confirmado: boolean) => Promise<void>;
+  carregando: boolean;
+  erro: string | null;
 }
 
 const ConvidadosContext = createContext<ConvidadosContextType | undefined>(undefined);
 
 export function ConvidadosProvider({ children }: { children: ReactNode }) {
   const [convidados, setConvidados] = useState<Convidado[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState<string | null>(null);
 
-  const adicionarConvidado = (nomeCompleto: string, confirmado: boolean) => {
-    const novoConvidado: Convidado = {
-      id: Date.now().toString(),
-      nomeCompleto,
-      confirmado,
-      dataConfirmacao: new Date(),
-    };
-    setConvidados(prev => [...prev, novoConvidado]);
+  // Carregar convidados ao inicializar
+  useEffect(() => {
+    carregarConvidados();
+  }, []);
+
+  const carregarConvidados = async () => {
+    try {
+      setCarregando(true);
+      setErro(null);
+      
+      const response = await fetch('/api/convidados');
+      if (!response.ok) {
+        throw new Error('Erro ao carregar convidados');
+      }
+      
+      const data = await response.json();
+      
+      // Converter strings de data de volta para objetos Date
+      const convidadosComData = data.map((convidado: any) => ({
+        ...convidado,
+        dataConfirmacao: new Date(convidado.dataConfirmacao)
+      }));
+      
+      setConvidados(convidadosComData);
+    } catch (error) {
+      console.error('Erro ao carregar convidados:', error);
+      setErro('Erro ao carregar dados dos convidados');
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  const adicionarConvidado = async (nomeCompleto: string, confirmado: boolean) => {
+    try {
+      setErro(null);
+      
+      const response = await fetch('/api/convidados', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nomeCompleto,
+          confirmado,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao salvar convidado');
+      }
+
+      const novoConvidado = await response.json();
+      
+      // Converter string de data para objeto Date
+      const convidadoComData = {
+        ...novoConvidado,
+        dataConfirmacao: new Date(novoConvidado.dataConfirmacao)
+      };
+
+      setConvidados(prev => [...prev, convidadoComData]);
+    } catch (error) {
+      console.error('Erro ao adicionar convidado:', error);
+      setErro('Erro ao salvar confirmação');
+      throw error; // Re-throw para que o componente possa tratar o erro
+    }
   };
 
   return (
-    <ConvidadosContext.Provider value={{ convidados, adicionarConvidado }}>
+    <ConvidadosContext.Provider value={{ 
+      convidados, 
+      adicionarConvidado, 
+      carregando, 
+      erro 
+    }}>
       {children}
     </ConvidadosContext.Provider>
   );

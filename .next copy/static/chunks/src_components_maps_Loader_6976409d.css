@@ -1,0 +1,30 @@
+/* [project]/src/components/maps/Loader.css [app-client] (css) */
+.loader {
+  width: 44.8px;
+  height: 44.8px;
+  position: relative;
+  transform: rotate(45deg);
+}
+
+.loader:before, .loader:after {
+  content: "";
+  background: radial-gradient(11.2px, #0000 94%, #ff4747);
+  border-radius: 50% 50% 0;
+  position: absolute;
+  inset: 0;
+}
+
+.loader:after {
+  animation: 1s infinite pulse-ytk0dhmd;
+  transform: perspective(336px)translateZ(0);
+}
+
+@keyframes pulse-ytk0dhmd {
+  to {
+    opacity: 0;
+    transform: perspective(336px)translateZ(168px);
+  }
+}
+
+
+/*# sourceMappingURL=src_components_maps_Loader_6976409d.css.map*/

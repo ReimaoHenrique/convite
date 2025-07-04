@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "src/app/api/convidados/route.ts": {
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ]
+}
+
