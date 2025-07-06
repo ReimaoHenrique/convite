@@ -38,11 +38,6 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
-  const baseUrl =
-    process.env.NODE_ENV === "production"
-      ? "https://oneideconvite.vercel.app"
-      : "http://localhost:3000";
-
   // Carregar convidados ao inicializar
   useEffect(() => {
     carregarConvidados();
@@ -53,13 +48,14 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
       setCarregando(true);
       setErro(null);
 
-      const response = await fetch(`${baseUrl}/api/convidados`);
+      const response = await fetch("/api/convidados");
       if (!response.ok) {
         throw new Error("Erro ao carregar convidados");
       }
 
       const data: ConvidadoAPI[] = await response.json();
 
+      // Converter strings de data de volta para objetos Date
       const convidadosComData: Convidado[] = data.map((convidado) => ({
         ...convidado,
         dataConfirmacao: new Date(convidado.dataConfirmacao),
@@ -81,7 +77,7 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
     try {
       setErro(null);
 
-      const response = await fetch(`${baseUrl}/api/convidados`, {
+      const response = await fetch("/api/convidados", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,6 +94,7 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
 
       const novoConvidado: ConvidadoAPI = await response.json();
 
+      // Converter string de data para objeto Date
       const convidadoComData: Convidado = {
         ...novoConvidado,
         dataConfirmacao: new Date(novoConvidado.dataConfirmacao),
@@ -107,7 +104,7 @@ export function ConvidadosProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Erro ao adicionar convidado:", error);
       setErro("Erro ao salvar confirmação");
-      throw error;
+      throw error; // Re-throw para que o componente possa tratar o erro
     }
   };
 
