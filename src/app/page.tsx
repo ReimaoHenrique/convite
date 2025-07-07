@@ -1,8 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useConvidados } from "@/lib/context";
-import { Confetti } from "@/components/magicui/confetti";
 import { FlipText } from "@/components/magicui/flip-text";
 import { FotoConvite } from "@/components/FotoConvite";
 import Maps from "@/components/maps/maps";
